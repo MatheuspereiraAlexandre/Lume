@@ -48,7 +48,7 @@
         </div>
 
         <button
-          @click="handleOfflineMode"
+          @click="notify"
           class="w-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium py-2 px-6 rounded-lg transition-colors duration-200 text-sm"
         >
           Continuar sem conta
@@ -81,9 +81,43 @@ import { ref } from "vue";
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faRightToBracket, faUserPlus } from '@fortawesome/free-solid-svg-icons'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { defineProps } from 'vue'
 
 library.add(faRightToBracket, faUserPlus)
+
+
+import {
+  isPermissionGranted,
+  requestPermission,
+  sendNotification,
+} from '@tauri-apps/plugin-notification';
+
+// primeiro garante que tem permissão
+async function notify() {
+  try {
+    // Do you have permission to send a notification?
+    let permissionGranted = await isPermissionGranted();
+    console.log("isPermissionGranted:", permissionGranted);
+
+    // If not we need to request it
+    if (!permissionGranted) {
+      const permission = await requestPermission();
+      console.log("requestPermission:", permission);
+      permissionGranted = permission === 'granted';
+    }
+
+    // Once permission has been granted we can send the notification
+    if (permissionGranted) {
+      await sendNotification({
+        title: '📌 Lembrete',
+        body: 'Sua tarefa foi concluída!',
+      });
+    } else {
+      console.warn("Notificação não permitida pelo usuário.");
+    }
+  } catch (e) {
+    console.error("Erro ao tentar notificar:", e);
+  }
+}
 </script>
 
 <style scoped>
