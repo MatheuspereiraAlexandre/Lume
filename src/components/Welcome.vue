@@ -56,7 +56,7 @@
       </div>
 
       <!-- Footer -->
-      <div class="mt-12 text-center">
+      <div class="mt-10 text-center">
         <p class="text-gray-600 text-xs">
           Versão 1.0.0 •
           <a
