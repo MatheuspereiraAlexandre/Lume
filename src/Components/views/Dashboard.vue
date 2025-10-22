@@ -2,7 +2,7 @@
 <main class="ml-16 pt-16 min-h-screen">
       <div class="p-8">
         <div class="mb-8">
-          <h1 class="text-3xl font-bold text-white mb-2">Bem-vindo de volta, {{Nome}}</h1>
+          <h1 class="text-3xl font-bold text-white mb-2">Bem-vindo de volta, Magno</h1>
           <p class="text-gray-400">Aqui está o que está acontecendo hoje</p>
         </div>
 
@@ -147,7 +147,7 @@ const stats = [
   },
   {
     label: 'Equipes Ativas',
-    value: '8',
+    value: '4',
     change: '+2',
     icon: Users,
     color: 'text-cyan-400',
@@ -155,7 +155,7 @@ const stats = [
   },
   {
     label: 'Reuniões Hoje',
-    value: '5',
+    value: '3',
     change: '2 próximas',
     icon: Calendar,
     color: 'text-purple-400',
@@ -175,7 +175,7 @@ const activities = [
   {
     id: 1,
     title: 'Nova mensagem em #desenvolvimento',
-    description: 'Maria comentou sobre o novo projeto',
+    description: 'Arthur comentou sobre o novo projeto',
     time: 'há 5 minutos',
     icon: MessageSquare,
     iconBg: 'bg-emerald-400/10',
@@ -193,7 +193,7 @@ const activities = [
   {
     id: 3,
     title: 'Documento compartilhado',
-    description: 'Pedro compartilhou "Roadmap Q2 2025"',
+    description: 'Matheus compartilhou "Roadmap para o lume"',
     time: 'há 1 hora',
     icon: FileText,
     iconBg: 'bg-cyan-400/10',
@@ -202,7 +202,7 @@ const activities = [
   {
     id: 4,
     title: 'Novo membro na equipe',
-    description: 'Ana Silva entrou em Marketing',
+    description: 'Miguel entrou no canal geral',
     time: 'há 2 horas',
     icon: Users,
     iconBg: 'bg-amber-400/10',

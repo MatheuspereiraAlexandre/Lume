@@ -1,12 +1,11 @@
 <template>
   <div
-    class="background-main min-h-screen flex items-center justify-center p-8"
+    class="background-main bg-[#1a1a1] min-h-screen flex items-center justify-center p-8"
   >
     <div class="max-w-md w-full text-center">
       <div class="mb-8">
-        <div
-          class="w-20 h-20 bg-gradient-to-br from-blue-800 to-red-800 rounded-2xl mx-auto flex items-center justify-center mb-4"
-        >
+        <div class="img-logo  flex items-center justify-center">
+         <img src="../assets/images/Logo 128.png" class="rounded-4xl" alt="">
         </div>
         <h1 class="text-3xl font-bold text-white mb-2">Bem-vindo</h1>
         <p class="text-gray-400 text-lg">Seu workspace pessoal</p>
@@ -117,16 +116,7 @@ button:active {
   transform: translateY(0);
 }
 
-.background-main {
-  background: #474a6a;
-  background: linear-gradient(
-    150deg,
-    rgba(71, 74, 106, 1) 0%,
-    rgba(41, 43, 58, 1) 25%,
-    rgba(17, 17, 18, 0.97) 70%,
-    rgba(120, 86, 44, 1) 100%
-  );
-}
+
 .btn-login {
   background-color: #3c3f69;
   transition: ease-in-out 0.2s;

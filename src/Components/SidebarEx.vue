@@ -1,25 +1,3 @@
-<script setup>
-import { ref } from 'vue'
-import { Activity, House, Users, MessageSquare, Calendar, Settings } from 'lucide-vue-next'
-
-const emit = defineEmits(['update-active']) //  emite pro pai
-const isExpanded = ref(false)
-const activeItem = ref('dashboard')
-
-const navItems = [
-  { id: 'dashboard', label: 'Geral', icon: House },
-  { id: 'activity', label: 'Atividades', icon: Activity },
-  { id: 'teams', label: 'Equipes', icon: Users },
-  { id: 'chats', label: 'Chats', icon: MessageSquare },
-  { id: 'calendar', label: 'Calendário', icon: Calendar }
-]
-
-function handleClick(id) {
-  activeItem.value = id
-  emit('update-active', id) // envia pro componente pai
-}
-</script>
-
 <template>
   <aside
     @mouseenter="isExpanded = true"
@@ -36,7 +14,7 @@ function handleClick(id) {
           <img src="#" alt="Profile" class="w-full h-full object-cover" />
         </div>
         <div v-show="isExpanded" class="overflow-hidden">
-          <p class="text-sm font-medium text-white truncate">João Silva</p>
+          <p class="text-sm font-medium text-white truncate">Magnoneves</p>
           <p class="text-xs text-gray-400 truncate">Disponível</p>
         </div>
       </div>
@@ -83,3 +61,24 @@ function handleClick(id) {
     </div>
   </aside>
 </template>
+<script setup>
+import { ref } from 'vue'
+import { Activity, House, Users, MessageSquare, Calendar, Settings } from 'lucide-vue-next'
+
+const emit = defineEmits(['update-active']) //  emite pro pai
+const isExpanded = ref(false)
+const activeItem = ref('dashboard')
+
+const navItems = [
+  { id: 'dashboard', label: 'Geral', icon: House },
+  { id: 'activity', label: 'Atividades', icon: Activity },
+  { id: 'teams', label: 'Equipes', icon: Users },
+ // { id: 'chats', label: 'Chats', icon: MessageSquare },
+ // { id: 'calendar', label: 'Calendário', icon: Calendar }
+]
+
+function handleClick(id) {
+  activeItem.value = id
+  emit('update-active', id) // envia pro componente pai
+}
+</script>

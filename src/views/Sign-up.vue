@@ -1,35 +1,28 @@
 <template>
   <div
-    class="background-main min-h-screen bg-slate-900 flex items-center justify-center p-4"
+    class="background-main min-h-screen bg-[#1a1a1] flex items-center justify-center p-4"
   >
     <div class="w-full max-w-md">
       <div class="text-center mb-8">
         <div class="inline-flex items-center gap-2 mb-4">
-          <div
-            class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center"
-          >
-            <svg
-              class="w-5 h-5 text-white"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M10 2L3 7v11a1 1 0 001 1h12a1 1 0 001-1V7l-7-5z"
-                clip-rule="evenodd"
-              />
-            </svg>
+          <div>
+            <img src="../assets/images/Logo 128.png" class="img-logo w-24 rounded-full" alt="">
           </div>
-          <router-link to="/" class="text-xl hover:text-secondary-orange transition duration-150 font-semibold text-white">Lume</router-link>
+          <router-link
+            to="/"
+            class="text-xl hover:text-secondary-orange transition duration-150 font-semibold text-white"
+            >Lume</router-link
+          >
         </div>
 
         <h1 class="text-2xl font-bold text-white mb-2">Criar sua conta</h1>
         <p class="text-slate-400">Preencha os dados para se cadastrar</p>
       </div>
 
-      <div class="rounded-2xl p-8 shadow-xl bg-black-100 backdrop-blur-sm border-border-100">
+      <div
+        class="rounded-2xl p-8 shadow-xl bg-black-100 backdrop-blur-sm border-border-100"
+      >
         <form @submit.prevent="handleRegister" class="space-y-6">
-
           <div>
             <label
               for="name"
@@ -199,19 +192,9 @@
   </div>
 </template>
 
-<style>
+<style lang="scss" scoped>
 * {
   user-select: none;
-}
-.background-main {
-  background: #474a6a;
-  background: linear-gradient(
-    150deg,
-    rgba(71, 74, 106, 1) 0%,
-    rgba(41, 43, 58, 1) 25%,
-    rgba(17, 17, 18, 0.97) 70%,
-    rgba(120, 86, 44, 1) 100%
-  );
 }
 </style>
 
@@ -230,6 +213,4 @@ const showPassword = ref(false);
 const isLoading = ref(false);
 const message = ref("");
 const messageType = ref("");
-
-
 </script>

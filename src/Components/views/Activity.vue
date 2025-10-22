@@ -1,136 +1,508 @@
 <template>
-  <div class="flex h-screen  text-white">
-    <!-- Sidebar Resizable -->
-    <div 
-      class="flex-shrink-0  border-r border-[#3d3d3d] overflow-hidden"
-      :style="{ width: sidebarWidth + 'px' }"
-    >
-      <div class="h-full overflow-y-auto">
-
-        <div class="p-4 border-b border-[#3d3d3d]">
-          <h2 class="text-lg font-semibold">Atividade</h2>
+  <div class="min-h-screen p-4" style="background-color: #0a0a0a">
+    <div class="semi-header flex justify-between">
+      <h1 class="text-2xl font-bold mb-6" style="color: #ffffff">
+        Boa noite, Magno
+      </h1>
+      <button
+        class="cards-options cursor-pointer w-8 h-16 flex justify-center items-center"
+        @click="showMenu($event)"
+      >
+        <div class="dots-vertical">
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
+      </button>
+      <Menu :model="menuItems" ref="menu" popup />
+    </div>
 
-
-        <div class="py-2">
-          <div
-            v-for="lesson in lessons"
-            :key="lesson.id"
-            @click="selectLesson(lesson.id)"
-            :class="[
-              'px-4 py-3 cursor-pointer hover:bg-[#3d3d3d] transition-colors border-l-4',
-              selectedLessonId === lesson.id ? 'bg-[#3d3d3d] border-l-secondary-orange' : 'border-l-transparent'
-            ]"
-          >
-            <div class="flex items-start gap-3">
-              <div class="mt-1">
-                <svg class="w-5 h-5 text-secondary-blue-200" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
-                  <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
-                </svg>
-              </div>
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center justify-between gap-2">
-                  <h3 class="font-semibold text-sm truncate">{{ lesson.student }}</h3>
-                  <span class="text-xs text-gray-400 flex-shrink-0">{{ lesson.date }}</span>
-                </div>
-                <p class="text-xs text-secondary-orange mt-1">{{ lesson.action }}</p>
-                <p class="text-xs text-secondary-blue-200 mt-1 truncate">{{ lesson.course }}</p>
+    <div class="grid-container">
+      <div
+        v-for="card in cards.filter((c) => c.visible)"
+        :key="card.id"
+        :style="{
+          gridColumn: `span ${card.width}`,
+          gridRow: `span ${card.height}`,
+          backgroundColor: '#1a1a1a',
+          border: '1px solid #2a2a2a',
+        }"
+        class="card"
+        :class="{ dragging: draggingId === card.id }"
+        :data-card-id="card.id"
+        @mousedown="!isResizing && startDrag($event, card.id)"
+      >
+        <div
+          class="resize-handle"
+          @mousedown.stop="startResize($event, card.id)"
+          title="Redimensionar"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M14 2L2 14M14 8L8 14"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">{{ card.title }}</h2>
+          <div v-if="card.id === 1" class="recentes-list">
+            <div
+              class="recentes-item cursor-pointer m-1 hover:bg-[#2a2a2a] rounded-xl"
+              v-for="(item, index) in recentItems"
+              :key="index"
+            >
+              <span class="bullet">⦿</span>
+              <div class="item-content">
+                <span class="item-title">{{ item.title }}</span>
+                <span class="item-subtitle">• {{ item.subtitle }}</span>
               </div>
             </div>
+          </div>
+          <div v-else-if="card.id === 2" class="agenda-content">
+            <div class="agenda-header"></div>
+          </div>
+          <div v-else-if="card.id === 3" class="empty-state">
+            <div class="empty-icon">📋</div>
+            <p style="color: #888; font-size: 0.875rem">
+              A lista pessoal contém todas as suas tarefas.
+            </p>
+            <button class="add-btn">+ Criar uma tarefa</button>
           </div>
         </div>
       </div>
     </div>
-
-
-    <div
-      @mousedown="startResize"
-      class="w-1 bg-[#3d3d3d] hover:bg-[#6264a7] cursor-col-resize transition-colors flex-shrink-0"
-    ></div>
-
-  
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, watch } from "vue";
+import Menu from "primevue/menu";
+import { label } from "@primeuix/themes/aura/metergroup";
+import { title } from "@primeuix/themes/aura/card";
 
-const sidebarWidth = ref(350)
-const isResizing = ref(false)
-const selectedLessonId = ref(1)
+const menu = ref(null);
+const isResizing = ref(false);
+const draggingId = ref(null);
+const resizingCard = ref(null);
+const startPos = ref({ x: 0, y: 0 });
+const startSize = ref({ width: 0, height: 0 });
 
-const lessons = ref([
+const defaultCards = [
+  { id: 1, title: "Recentes", width: 1, height: 2, visible: true },
+  { id: 2, title: "Tarefas pendentes", width: 1, height: 2, visible: true },
+  { id: 3, title: "Lista pessoal", width: 1, height: 2, visible: true },
+  { id: 4, title: "Progresso semanal", width: 1, height: 2, visible: true },
+];
+
+const cards = ref(
+  JSON.parse(localStorage.getItem("cards")) || [...defaultCards]
+);
+
+const cardOptions = ref([
   {
     id: 1,
-    student: 'ELZA STAUBER',
-    action: 'Criou ativdidade',
-    date: '14/05',
-    course: 'SOCIO-3A-I-DESENVOLVIMENTO DE SISTEMAS - MTEC - PI-26...',
-    title: 'QUESTÕES SOCIOLOGIA',
+    title: "Resetar",
   },
   {
     id: 2,
-    student: 'IURY DA SILVA',
-    action: 'Criou atividade',
-    date: '13/10',
-    course: 'SEMB-3A-I-DESENVOLVIMENTO DE SISTEMAS - MTEC - PI-2...',
-    title: 'DESENVOLVIMENTO WEB AVANÇADO',
+    title: "Opções",
+  },
+]);
+
+const menuItems = ref([
+  {
+    label: "Mostrar Cards",
+    items: cards.value.map((card) => ({
+      label: card.title,
+      command: () => {
+        card.visible = !card.visible;
+      },
+      icon: card.visible ? "pi pi-check" : "",
+    })),
+  },
+  {
+    label: "Resetar",
+    items: [
+      {
+        label: "Voltar ao padrão",
+        command: () => {
+          localStorage.removeItem("cards");
+          cards.value = JSON.parse(JSON.stringify(defaultCards));
+          // Update menu items to reflect reset
+          menuItems.value[0].items = cards.value.map((card) => ({
+            label: card.title,
+            command: () => {
+              card.visible = !card.visible;
+            },
+            icon: card.visible ? "pi pi-check" : "",
+          }));
+        },
+      },
+      { label: "Opções" },
+    ],
+  },
+]);
+
+const recentItems = [
+  { title: "Tarefa 1", subtitle: "em Projeto 1" },
+  { title: "Tarefa 3", subtitle: "em Projeto 1" },
+  { title: "Tarefa 2", subtitle: "em Projeto 1" },
+];
+
+watch(
+  cards,
+  (newVal) => {
+    localStorage.setItem("cards", JSON.stringify(newVal));
+  },
+  { deep: true }
+);
+
+function showMenu(event) {
+  menu.value.toggle(event);
+}
+
+let draggedCardId = null;
+let draggedCardIndex = null;
+let isDragging = false;
+
+function startDrag(event, cardId) {
+  if (isResizing.value) return;
   
-  },
-  {
-    id: 3,
-    student: 'ARTHUR SANTOS BARBOSA',
-    action: 'Criou atividade',
-    date: '07/10',
-    course: 'LPL-3A-I-DESENVOLVIMENTO DE SISTE... › RODA DE LEIT...',
-    title: 'ANÁLISE DE SISTEMAS',
-  },
-  {
-    id: 4,
-    student: 'ANDREIA DA CONCEICAO LENTINI KIAN',
-    action: 'Criou atividade',
-    date: '03/10',
-    course: 'BIO-3A-I-DESENVOLVIMENTO DE SISTEMAS - MTEC - PI-26...',
-    title: 'BANCO DE DADOS',
-  },
-  {
-    id: 5,
-    student: 'IURY DA SILVA',
-    action: 'atualizou uma tarefa',
-    date: '30/09',
-    course: 'QITS-3A-GB-I-DESENVOLVIMENTO DE SISTEMAS - MTEC - PL...',
-    title: 'TESTES DE SOFTWARE',
-  }
-])
-
-const selectedLesson = computed(() => {
-  return lessons.value.find(l => l.id === selectedLessonId.value) || lessons.value[0]
-})
-
-const selectLesson = (id) => {
-  selectedLessonId.value = id
-}
-
-const startResize = (e) => {
-  isResizing.value = true
-  document.addEventListener('mousemove', handleResize)
-  document.addEventListener('mouseup', stopResize)
-  e.preventDefault()
-}
-
-const handleResize = (e) => {
-  if (!isResizing.value) return
+  // Only start drag on left mouse button
+  if (event.button !== 0) return;
   
-  const newWidth = e.clientX
-  if (newWidth >= 250 && newWidth <= 600) {
-    sidebarWidth.value = newWidth
+  // Don't drag if clicking on interactive elements
+  if (event.target.closest('.card-content *:not(.card-title)')) return;
+  
+  isDragging = true;
+  draggingId.value = cardId;
+  draggedCardId = cardId;
+  draggedCardIndex = cards.value.findIndex((c) => c.id === cardId);
+  
+  document.addEventListener("mousemove", handleDragMove);
+  document.addEventListener("mouseup", endDrag);
+  document.body.style.cursor = "grabbing";
+  document.body.style.userSelect = "none";
+}
+
+function handleDragMove(event) {
+  if (!isDragging) return;
+  
+  // Find the card element under the mouse
+  const elements = document.elementsFromPoint(event.clientX, event.clientY);
+  const targetCard = elements.find(el => el.classList.contains('card') && !el.classList.contains('dragging'));
+  
+  if (targetCard) {
+    const targetId = parseInt(targetCard.getAttribute('data-card-id'));
+    if (targetId && targetId !== draggedCardId) {
+      // Swap cards
+      const targetIndex = cards.value.findIndex((c) => c.id === targetId);
+      if (targetIndex !== -1 && draggedCardIndex !== -1) {
+        const temp = cards.value[draggedCardIndex];
+        cards.value[draggedCardIndex] = cards.value[targetIndex];
+        cards.value[targetIndex] = temp;
+        draggedCardIndex = targetIndex;
+      }
+    }
   }
 }
 
-const stopResize = () => {
-  isResizing.value = false
-  document.removeEventListener('mousemove', handleResize)
-  document.removeEventListener('mouseup', stopResize)
+function endDrag() {
+  isDragging = false;
+  draggingId.value = null;
+  draggedCardId = null;
+  draggedCardIndex = null;
+  document.removeEventListener("mousemove", handleDragMove);
+  document.removeEventListener("mouseup", endDrag);
+  document.body.style.cursor = "";
+  document.body.style.userSelect = "";
+}
+
+function startResize(event, cardId) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  isResizing.value = true;
+  resizingCard.value = cardId;
+  startPos.value = { x: event.clientX, y: event.clientY };
+
+  const card = cards.value.find((c) => c.id === cardId);
+  startSize.value = { width: card.width, height: card.height };
+
+  document.addEventListener("mousemove", handleResize);
+  document.addEventListener("mouseup", stopResize);
+  document.body.style.cursor = "nwse-resize";
+  document.body.style.userSelect = "none";
+}
+
+function handleResize(event) {
+  if (!isResizing.value || !resizingCard.value) return;
+
+  const card = cards.value.find((c) => c.id === resizingCard.value);
+  if (!card) return;
+
+  const deltaX = event.clientX - startPos.value.x;
+  const deltaY = event.clientY - startPos.value.y;
+
+  const cellSize = 300;
+  card.width = Math.min(
+    3,
+    Math.max(1, Math.round(startSize.value.width + deltaX / cellSize))
+  );
+  card.height = Math.min(
+    3,
+    Math.max(1, Math.round(startSize.value.height + deltaY / cellSize))
+  );
+}
+
+function stopResize() {
+  isResizing.value = false;
+  resizingCard.value = null;
+  document.removeEventListener("mousemove", handleResize);
+  document.removeEventListener("mouseup", stopResize);
+  document.body.style.cursor = "";
+  document.body.style.userSelect = "";
 }
 </script>
+
+<style lang="scss" scoped>
+.semi-header {
+  display: flex;
+  align-items: center;
+  height: 6rem;
+  width: 98%;
+}
+.dots-vertical {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 40px;
+}
+.dots-vertical span {
+  width: 12px;
+  height: 12px;
+  border: 3px solid white;
+  border-radius: 50%;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  grid-auto-rows: 200px;
+}
+
+.card {
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  cursor: grab;
+  transition: opacity 0.2s, transform 0.1s;
+  overflow: hidden;
+}
+
+.card:hover {
+  border-color: #3a3a3a !important;
+}
+
+.card.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.resize-handle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  cursor: nwse-resize;
+  color: #666;
+  opacity: 0;
+  transition: opacity 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  background-color: #2a2a2a;
+  border-radius: 6px;
+}
+
+.card:hover .resize-handle {
+  opacity: 1;
+}
+
+.resize-handle:hover {
+  color: #fff;
+  background-color: #3a3a3a;
+}
+
+.card-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.card-content * {
+  pointer-events: auto;
+}
+
+.card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #ffffff;
+}
+
+.recentes-list {
+  overflow-y: auto;
+  max-height: calc(100% - 40px);
+  padding-right: 8px;
+}
+
+.recentes-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.recentes-list::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+.recentes-list::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 4px;
+}
+
+.recentes-list::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
+}
+
+.recentes-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  color: #ffffff;
+  font-size: 0.875rem;
+}
+
+.bullet {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item-title {
+  color: #ffffff;
+  &:hover {
+    color: var(--color-secondary-orange);
+  }
+}
+
+.item-subtitle {
+  color: #888;
+  font-size: 0.8125rem;
+  &:hover {
+    color: var(--color-secondary-blue-200);
+  }
+}
+
+.agenda-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.agenda-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.agenda-nav {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.nav-btn {
+  background: #2a2a2a;
+  border: none;
+  color: #888;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-btn:hover {
+  background: #3a3a3a;
+  color: #fff;
+}
+
+.today-btn {
+  background: #2a2a2a;
+  border: none;
+  color: #888;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.today-btn:hover {
+  background: #3a3a3a;
+  color: #fff;
+}
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  opacity: 0.3;
+}
+
+.add-btn {
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  margin-top: 8px;
+}
+
+.add-btn:hover {
+  background: #3a3a3a;
+}
+
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
