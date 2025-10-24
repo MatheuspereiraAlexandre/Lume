@@ -17,7 +17,7 @@
       <Menu :model="menuItems" ref="menu" popup />
     </div>
 
-    <div class="grid-container">
+    <div class="grid-container ">
       <div
         v-for="card in cards.filter((c) => c.visible)"
         :key="card.id"
@@ -100,6 +100,7 @@ const defaultCards = [
 const cards = ref(
   JSON.parse(localStorage.getItem("cards")) || [...defaultCards]
 );
+
 
 const cardOptions = ref([
   {
@@ -290,6 +291,7 @@ function stopResize() {
 }
 
 .card {
+
   border-radius: 12px;
   padding: 20px;
   position: relative;
