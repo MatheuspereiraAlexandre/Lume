@@ -6,7 +6,11 @@
       <div class="text-center mb-8">
         <div class="inline-flex items-center gap-2 mb-4">
           <div>
-            <img src="../assets/images/Logo 128.png" class="img-logo w-24 rounded-full" alt="">
+            <img
+              src="../assets/images/Logo 128.png"
+              class="img-logo w-24 rounded-full"
+              alt=""
+            />
           </div>
           <router-link
             to="/"
@@ -22,7 +26,7 @@
       <div
         class="rounded-2xl p-8 shadow-xl bg-black-100 backdrop-blur-sm border-border-100"
       >
-        <form @submit.prevent="handleRegister" class="space-y-6">
+        <form @submit.prevent="handlePost" class="space-y-6">
           <div>
             <label
               for="name"
@@ -201,6 +205,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import router from "../router";
+import { invoke } from '@tauri-apps/api/core'
 
 const form = ref({
   name: "",
@@ -208,6 +213,33 @@ const form = ref({
   password: "",
   confirmPassword: "",
 });
+
+async function handlePost() {
+  isLoading.value = true;
+  message.value = "";
+
+  if(form.value.password !==form.value.confirmPassword) {
+    message.value = "As senhas não coincidem";
+    isLoading.value = false;
+    return
+  }
+
+
+  try {
+    const response = await invoke("post_user", {
+      name: form.value.name,
+      email: form.value.email,
+      password: form.value.password,
+    });
+
+    console.log("resposta dessa porra: ", response);
+  } catch (err) {
+    console.error(err);
+  }
+  finally {
+    isLoading.value = false;
+  }
+}
 
 const showPassword = ref(false);
 const isLoading = ref(false);

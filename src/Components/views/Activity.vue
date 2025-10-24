@@ -2,7 +2,7 @@
   <div class="min-h-screen p-4" style="background-color: #0a0a0a">
     <div class="semi-header flex justify-between">
       <h1 class="text-2xl font-bold mb-6" style="color: #ffffff">
-        Boa noite, Magno
+        Boa noite, {{ nome }}
       </h1>
       <button
         class="cards-options cursor-pointer w-8 h-16 flex justify-center items-center"
@@ -131,7 +131,6 @@ const menuItems = ref([
         command: () => {
           localStorage.removeItem("cards");
           cards.value = JSON.parse(JSON.stringify(defaultCards));
-          // Update menu items to reflect reset
           menuItems.value[0].items = cards.value.map((card) => ({
             label: card.title,
             command: () => {
@@ -164,22 +163,20 @@ function showMenu(event) {
   menu.value.toggle(event);
 }
 
-let draggedCardId = null;
+let IdBrutal = null; // id do dragged card
 let draggedCardIndex = null;
 let isDragging = false;
 
 function startDrag(event, cardId) {
   if (isResizing.value) return;
   
-  // Only start drag on left mouse button
   if (event.button !== 0) return;
   
-  // Don't drag if clicking on interactive elements
   if (event.target.closest('.card-content *:not(.card-title)')) return;
   
   isDragging = true;
   draggingId.value = cardId;
-  draggedCardId = cardId;
+  IdBrutal = cardId;
   draggedCardIndex = cards.value.findIndex((c) => c.id === cardId);
   
   document.addEventListener("mousemove", handleDragMove);
@@ -191,14 +188,12 @@ function startDrag(event, cardId) {
 function handleDragMove(event) {
   if (!isDragging) return;
   
-  // Find the card element under the mouse
   const elements = document.elementsFromPoint(event.clientX, event.clientY);
   const targetCard = elements.find(el => el.classList.contains('card') && !el.classList.contains('dragging'));
   
   if (targetCard) {
     const targetId = parseInt(targetCard.getAttribute('data-card-id'));
-    if (targetId && targetId !== draggedCardId) {
-      // Swap cards
+    if (targetId && targetId !== IdBrutal) {
       const targetIndex = cards.value.findIndex((c) => c.id === targetId);
       if (targetIndex !== -1 && draggedCardIndex !== -1) {
         const temp = cards.value[draggedCardIndex];
@@ -213,7 +208,7 @@ function handleDragMove(event) {
 function endDrag() {
   isDragging = false;
   draggingId.value = null;
-  draggedCardId = null;
+  IdBrutal = null;
   draggedCardIndex = null;
   document.removeEventListener("mousemove", handleDragMove);
   document.removeEventListener("mouseup", endDrag);
