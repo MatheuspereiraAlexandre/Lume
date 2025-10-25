@@ -66,11 +66,12 @@
           <div class="border-t border-gray-700 flex-grow"></div>
         </div>
 
-        <button
+        <router-link
+          to="/main-page"
           class="w-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium py-2 px-6 rounded-lg transition-colors duration-200 text-sm"
         >
           Continuar sem conta
-        </button>
+        </router-link>
       </div>
 
       <div class="mt-12 text-center">
