@@ -118,9 +118,6 @@
     }
   }
 }
-.fast-actions{
-  
-}
 </style>
 <script setup>
 import { ref } from 'vue'

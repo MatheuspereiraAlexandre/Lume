@@ -5,19 +5,45 @@
     <div class="w-full max-w-md">
       <div class="text-center mb-8">
         <div class="inline-flex items-center gap-2 mb-4">
-          <div
-            class="rounded-lg flex items-center justify-center"
-          >
-          <img src="../assets/images/Logo 128.png" class="img rounded-full w-24" alt="">
+          <div>
+            <img
+              src="../assets/images/Logo 128.png"
+              class="img-logo w-24 rounded-full"
+              alt=""
+            />
           </div>
-          <router-link to="/" class="text-xl hover:text-secondary-orange transition duration-150 font-semibold text-white">Lume</router-link>
+          <router-link
+            to="/"
+            class="text-xl hover:text-secondary-orange transition duration-150 font-semibold text-white"
+            >Lume</router-link
+          >
         </div>
-        <h1 class="text-2xl font-bold text-white mb-2">Bem-vindo de volta</h1>
-        <p class="text-secondary-text">Entre na sua conta para continuar</p>
+
+        <h1 class="text-2xl font-bold text-white mb-2">Criar sua conta</h1>
+        <p class="text-slate-400">Preencha os dados para se cadastrar</p>
       </div>
 
-      <div class="rounded-2xl p-8 shadow-xl border-border-100 bg-black-100">
-        <form @submit.prevent="handleLogin" class="space-y-6">
+      <div
+        class="rounded-2xl p-8 shadow-xl bg-black-100 backdrop-blur-sm border-border-100"
+      >
+        <form @submit.prevent="handlePost" class="space-y-6">
+          <div>
+            <label
+              for="name"
+              class="block text-sm font-medium text-slate-300 mb-2"
+            >
+              Nome Completo
+            </label>
+            <input
+              id="name"
+              v-model="form.name"
+              type="text"
+              required
+              class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+              placeholder="Digite seu nome completo"
+            />
+          </div>
+
           <div>
             <label
               for="email"
@@ -94,30 +120,26 @@
             </div>
           </div>
 
-          <div class="flex items-center justify-between">
-            <label class="flex items-center">
-              <input
-                v-model="form.remember"
-                type="checkbox"
-                class="w-4 h-4 text-orange-400 bg-slate-700 border-slate-600 rounded focus:ring-orange-500 focus:ring-2"
-              />
-              <span class="ml-2 text-sm text-slate-300">Lembrar de mim</span>
-            </label>
-            <router-link to="/mainPage">
-              <a
-              href="#"
-              class="text-sm text-orange-300 hover:text-orange-400 transition-colors"
+          <div>
+            <label
+              for="confirmPassword"
+              class="block text-sm font-medium text-slate-300 mb-2"
             >
-              Esqueceu a senha?
-            </a>
-            </router-link>
-            
+              Confirmar Senha
+            </label>
+            <input
+              id="confirmPassword"
+              v-model="form.confirmPassword"
+              type="password"
+              required
+              class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+              placeholder="••••••••"
+            />
           </div>
-
           <button
             type="submit"
             :disabled="isLoading"
-            class="w-full bg-primary-orange hover:bg-secondary-orange transition duration-300 ease-in cursor-pointer disabled:bg-orange-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-800"
+            class="w-full bg-primary-orange hover:bg-secondary-orange cursor-pointer disabled:bg-orange-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-800"
           >
             <span v-if="isLoading" class="flex items-center justify-center">
               <svg
@@ -140,9 +162,9 @@
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 ></path>
               </svg>
-              Entrando...
+              Criando conta...
             </span>
-            <router-link to="/mainPage" v-else>Entrar</router-link>
+            <span v-else>Criar Conta</span>
           </button>
 
           <div
@@ -156,13 +178,13 @@
 
         <div class="mt-6 text-center">
           <p class="text-slate-400">
-            Não tem uma conta?
-            <a
-              href="#"
+            Já tem uma conta?
+            <router-link
+              to="signin"
               class="text-orange-300 hover:text-orange-400 font-medium transition-colors"
             >
-              Cadastre-se
-            </a>
+              Fazer login
+            </router-link>
           </p>
         </div>
       </div>
@@ -173,31 +195,54 @@
     </div>
   </div>
 </template>
-<style scoped>
+
+<style lang="scss" scoped>
 * {
   user-select: none;
 }
-
 </style>
-<script setup>
+
+<script lang="ts" setup>
 import { ref, computed } from "vue";
+import router from "@lib/router-config";
+import { invoke } from '@tauri-apps/api/core'
 
 const form = ref({
+  name: "",
   email: "",
   password: "",
-  remember: false,
+  confirmPassword: "",
 });
+
+async function handlePost() {
+  isLoading.value = true;
+  message.value = "";
+
+  if(form.value.password !==form.value.confirmPassword) {
+    message.value = "As senhas não coincidem";
+    isLoading.value = false;
+    return
+  }
+
+
+  try {
+    const response = await invoke("post_user", {
+      name: form.value.name,
+      email: form.value.email,
+      password: form.value.password,
+    });
+
+    console.log("resposta dessa porra: ", response);
+  } catch (err) {
+    console.error(err);
+  }
+  finally {
+    isLoading.value = false;
+  }
+}
 
 const showPassword = ref(false);
 const isLoading = ref(false);
 const message = ref("");
 const messageType = ref("");
-
-const messageClass = computed(() => {
-  return messageType.value === "success"
-    ? "bg-green-900/50 text-green-400 border border-green-800"
-    : "bg-red-900/50 text-red-400 border border-red-800";
-});
-
-
 </script>
