@@ -17,7 +17,7 @@
       <Menu :model="menuItems" ref="menu" popup />
     </div>
 
-    <div class="grid-container ">
+    <div class="grid-container">
       <div
         v-for="card in cards.filter((c) => c.visible)"
         :key="card.id"
@@ -26,6 +26,7 @@
           gridRow: `span ${card.height}`,
           backgroundColor: '#1a1a1a',
           border: '1px solid #2a2a2a',
+          minHeight: card.id === 3 ? '300px' : '',
         }"
         class="card"
         :class="{ dragging: draggingId === card.id }"
@@ -101,7 +102,6 @@ const cards = ref(
   JSON.parse(localStorage.getItem("cards")) || [...defaultCards]
 );
 
-
 const cardOptions = ref([
   {
     id: 1,
@@ -170,16 +170,16 @@ let isDragging = false;
 
 function startDrag(event, cardId) {
   if (isResizing.value) return;
-  
+
   if (event.button !== 0) return;
-  
-  if (event.target.closest('.card-content *:not(.card-title)')) return;
-  
+
+  if (event.target.closest(".card-content *:not(.card-title)")) return;
+
   isDragging = true;
   draggingId.value = cardId;
   IdBrutal = cardId;
   draggedCardIndex = cards.value.findIndex((c) => c.id === cardId);
-  
+
   document.addEventListener("mousemove", handleDragMove);
   document.addEventListener("mouseup", endDrag);
   document.body.style.cursor = "grabbing";
@@ -188,12 +188,14 @@ function startDrag(event, cardId) {
 
 function handleDragMove(event) {
   if (!isDragging) return;
-  
+
   const elements = document.elementsFromPoint(event.clientX, event.clientY);
-  const targetCard = elements.find(el => el.classList.contains('card') && !el.classList.contains('dragging'));
-  
+  const targetCard = elements.find(
+    (el) => el.classList.contains("card") && !el.classList.contains("dragging")
+  );
+
   if (targetCard) {
-    const targetId = parseInt(targetCard.getAttribute('data-card-id'));
+    const targetId = parseInt(targetCard.getAttribute("data-card-id"));
     if (targetId && targetId !== IdBrutal) {
       const targetIndex = cards.value.findIndex((c) => c.id === targetId);
       if (targetIndex !== -1 && draggedCardIndex !== -1) {
@@ -291,7 +293,6 @@ function stopResize() {
 }
 
 .card {
-
   border-radius: 12px;
   padding: 20px;
   position: relative;

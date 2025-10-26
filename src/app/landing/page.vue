@@ -5,7 +5,7 @@
     <div class="max-w-md w-full text-center">
       <div class="mb-8">
         <div class="img-logo  flex items-center justify-center">
-         <img src="../assets/images/Logo 128.png" class="rounded-4xl" alt="">
+         <img src="/src/assets/images/Logo 128.png" class="rounded-4xl" alt="">
         </div>
         <h1 class="text-3xl font-bold text-white mb-2">Bem-vindo</h1>
         <p class="text-gray-400 text-lg">Seu workspace pessoal</p>
@@ -68,7 +68,7 @@
 
         <router-link
           to="/main-page"
-          class="w-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium py-2 px-6 rounded-lg transition-colors duration-200 text-sm"
+          class="bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium py-3 px-10 rounded-lg transition-colors duration-200 text-sm"
         >
           Continuar sem conta
         </router-link>
