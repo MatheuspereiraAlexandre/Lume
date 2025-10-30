@@ -1,0 +1,43 @@
+.main-informations {
+  cursor: pointer;
+  .informations {
+    position: relative;
+    border-radius: 12px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a; 
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+  
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 2px; 
+      border-radius: inherit;
+      background: linear-gradient(
+        150deg,
+        rgba(71, 74, 106, 1) 0%,
+        rgba(41, 43, 58, 1) 25%,
+        rgba(17, 17, 18, 0.97) 70%,
+        rgba(120, 86, 44, 1) 100%
+      );
+      mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      opacity: 0; 
+      transition: opacity 0.3s ease, filter 0.3s ease;
+      pointer-events: none;
+    }
+
+    &:hover::before {
+      opacity: 1;
+      filter: brightness(1.2);
+    }
+  }
+}

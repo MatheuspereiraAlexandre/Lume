@@ -72,7 +72,7 @@
               <input
                 id="password"
                 v-model="form.password"
-                :type="showPassword ? 'text' : 'password'"
+                :type="showPassword ? 'text' : 'password'" 
                 required
                 class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all pr-12"
                 placeholder="••••••••"
@@ -203,8 +203,7 @@
 </style>
 
 <script lang="ts" setup>
-import { ref, computed } from "vue";
-import router from "@lib/router-config";
+import { ref } from "vue";
 import { invoke } from '@tauri-apps/api/core'
 
 const form = ref({
@@ -244,5 +243,5 @@ async function handlePost() {
 const showPassword = ref(false);
 const isLoading = ref(false);
 const message = ref("");
-const messageType = ref("");
+const messageClass = ref("");
 </script>
