@@ -24,7 +24,8 @@
         :style="{
           gridColumn: `span ${card.width}`,
           gridRow: `span ${card.height}`,
-          backgroundColor: '#1a1a1a'
+          backgroundColor: '#1a1a1a',
+          border: '1px solid #2a2a2a',  // o height esta totalmente quebrado arrumar isso com urgencia  // adicionar o height personalizado dps 
         }"
         class="card border-2 border-secondary-blue-100 hover:border-secondary-blue-200"
         :class="{ dragging: draggingId === card.id }"
