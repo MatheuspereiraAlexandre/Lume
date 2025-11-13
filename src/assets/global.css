@@ -8,6 +8,18 @@
    --color-secondary-orange: oklch(0.6899 0.1173 69.15);
    --color-primary-blue: oklch(0.3851 0.0711 279.38);
    --color-secondary-blue-200: oklch(0.5279 0.1076 279.51);
+   --color-secondary-blue-300: oklch(0.7147 0.1554 247.77);
    --color-primary-text: oklch(1 0 0);
    --color-secondary-text: oklch(0.7107 0.0351 256.79);
+}
+@layer utilities {
+  /* Menor que 480px */
+  @media (max-width: 479px) {
+    .xs\:text-xs {
+      font-size: 0.75rem;
+    }
+    .xs\:p-2 {
+      padding: 0.5rem;
+    }
+  }
 }

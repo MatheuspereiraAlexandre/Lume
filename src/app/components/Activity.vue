@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen p-4" style="background-color: #0a0a0a">
     <div class="semi-header flex justify-between">
-      <h1 class="text-2xl font-bold mb-6" style="color: #ffffff">
-        Boa noite, {{ nome }}
+      <h1 class="text-2xl font-bold mb-6 flex" style="color: #ffffff; width: auto !important;">
+       <p class="good-morning text-secondary-orange">Boa noite</p> , {{ nome || "usuario"}}
       </h1>
       <button
         class="cards-options cursor-pointer w-8 h-16 flex justify-center items-center"
@@ -24,11 +24,9 @@
         :style="{
           gridColumn: `span ${card.width}`,
           gridRow: `span ${card.height}`,
-          backgroundColor: '#1a1a1a',
-          border: '1px solid #2a2a2a',
-          minHeight: card.id === 3 ? '300px' : '',
+          backgroundColor: '#1a1a1a'
         }"
-        class="card"
+        class="card border-2 border-secondary-blue-100 hover:border-secondary-blue-200"
         :class="{ dragging: draggingId === card.id }"
         :data-card-id="card.id"
         @mousedown="!isResizing && startDrag($event, card.id)"
@@ -66,8 +64,8 @@
             <div class="agenda-header"></div>
           </div>
           <div v-else-if="card.id === 3" class="empty-state">
-            <div class="empty-icon">📋</div>
-            <p style="color: #888; font-size: 0.875rem">
+            <div v-show="isCard3Expanded" class="empty-icon">📋</div>
+            <p v-show="isCard3Expanded" style="color: #888; font-size: 0.875rem">
               A lista pessoal contém todas as suas tarefas.
             </p>
             <button class="add-btn">+ Criar uma tarefa</button>
@@ -79,10 +77,11 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import Menu from "primevue/menu";
 import { label } from "@primeuix/themes/aura/metergroup";
 import { title } from "@primeuix/themes/aura/card";
+import { content } from "@primeuix/themes/aura/accordion";
 
 const menu = ref(null);
 const isResizing = ref(false);
@@ -264,6 +263,17 @@ function stopResize() {
   document.body.style.cursor = "";
   document.body.style.userSelect = "";
 }
+
+const cardHeights = ref({});
+
+const getCardHeight = (card) => {
+  return card.height * 200; // 200px por grid row
+};
+
+const isCard3Expanded = computed(() => {
+  const card3 = cards.value.find((c) => c.id === 3);
+  return card3 && getCardHeight(card3) > 200;
+});
 </script>
 
 <style lang="scss" scoped>
@@ -301,9 +311,6 @@ function stopResize() {
   overflow: hidden;
 }
 
-.card:hover {
-  border-color: #3a3a3a !important;
-}
 
 .card.dragging {
   opacity: 0.5;
@@ -408,10 +415,10 @@ function stopResize() {
 }
 
 .item-subtitle {
-  color: #888;
   font-size: 0.8125rem;
+  color: var(--color-secondary-blue-200);
   &:hover {
-    color: var(--color-secondary-blue-200);
+    color: var(--color-secondary-blue-300);
   }
 }
 

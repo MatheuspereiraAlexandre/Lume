@@ -4,12 +4,13 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "tauri": "tauri"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.1.0",
     "@primeuix/themes": "^1.2.5",
     "@tailwindcss/vite": "^4.1.13",
     "@tauri-apps/api": "^2.9.0",

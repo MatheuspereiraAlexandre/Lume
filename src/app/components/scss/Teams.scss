@@ -1,0 +1,400 @@
+.semi-header {
+  display: flex;
+  align-items: center;
+  height: 6rem;
+  width: 98%;
+}
+
+.dots-vertical {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 40px;
+}
+
+.dots-vertical span {
+  width: 12px;
+  height: 12px;
+  border: 3px solid white;
+  border-radius: 50%;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  grid-auto-rows: 200px;
+}
+
+.card {
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  cursor: grab;
+  transition: opacity 0.2s, transform 0.1s;
+  overflow: hidden;
+}
+
+.card:hover {
+  border-color: #3a3a3a !important;
+}
+
+.card.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.resize-handle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  cursor: nwse-resize;
+  color: #666;
+  opacity: 0;
+  transition: opacity 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  background-color: #2a2a2a;
+  border-radius: 6px;
+}
+
+.card:hover .resize-handle {
+  opacity: 1;
+}
+
+.resize-handle:hover {
+  color: #fff;
+  background-color: #3a3a3a;
+}
+
+.card-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.card-content * {
+  pointer-events: auto;
+}
+
+.card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #ffffff;
+}
+
+.rooms-list {
+  overflow-y: auto;
+  max-height: calc(100% - 40px);
+  padding-right: 8px;
+}
+
+.rooms-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.rooms-list::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+.rooms-list::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 4px;
+}
+
+.rooms-list::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
+}
+
+.room-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 8px;
+  transition: background-color 0.2s;
+  &:nth-child(3) {
+    .status-dot {
+      background-color: red;
+    }
+  }
+  &:nth-child(4) {
+    .status-dot {
+      background-color: red;
+    }
+  }
+}
+
+.room-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.room-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.room-name {
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  margin-bottom: 4px;
+}
+
+.room-participants {
+  color: #888;
+  font-size: 0.8125rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #48bb78;
+}
+
+.room-time {
+  color: #888;
+  font-size: 0.8125rem;
+  flex-shrink: 0;
+}
+
+.meetings-list {
+  overflow-y: auto;
+  max-height: calc(100% - 40px);
+  padding-right: 8px;
+}
+
+.meetings-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.meetings-list::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+.meetings-list::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 4px;
+}
+
+.meetings-list::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
+}
+
+.meeting-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 8px;
+  transition: background-color 0.2s;
+}
+
+.meeting-time-badge {
+  background-color: #2a2a2a;
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.meeting-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.meeting-title {
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  margin-bottom: 4px;
+}
+
+.meeting-organizer {
+  color: #888;
+  font-size: 0.8125rem;
+}
+
+.join-btn {
+  color: #ffffff;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+}
+
+.channels-list {
+  overflow-y: auto;
+  max-height: calc(100% - 40px);
+  padding-right: 8px;
+}
+
+.channels-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.channels-list::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+.channels-list::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 4px;
+}
+
+.channels-list::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
+}
+
+.channel-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 8px;
+  transition: background-color 0.2s;
+}
+
+.channel-icon {
+  width: 40px;
+  height: 40px;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: #888;
+  flex-shrink: 0;
+}
+
+.channel-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.channel-name {
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  margin-bottom: 4px;
+}
+
+.channel-message {
+  color: #888;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.channel-badge {
+  color: #ffffff;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.activity-list {
+  overflow-y: auto;
+  max-height: calc(100% - 40px);
+  padding-right: 8px;
+}
+
+.activity-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.activity-list::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+.activity-list::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 4px;
+}
+
+.activity-list::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.activity-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-text {
+  color: #ffffff;
+  font-size: 0.875rem;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.activity-text strong {
+  font-weight: 600;
+}
+
+.activity-time {
+  color: #888;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+}
