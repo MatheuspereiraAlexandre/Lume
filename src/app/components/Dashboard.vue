@@ -8,7 +8,7 @@
 
         <div class="main-informations grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div
-            v-for="stat in stats"
+            v-for="stat in stats" 
             :key="stat.label"
             class="informations bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6  transition-colors"
           >
@@ -45,9 +45,9 @@
                   <component :is="activity.icon" :class="['w-5 h-5', activity.iconColor]" />
                 </div>
                 <div class="flex-1 min-w-0">
-                  <p class="text-sm text-white mb-1">{{ activity.title }}</p>
-                  <p class="text-xs text-gray-400">{{ activity.description }}</p>
-                  <p class="text-xs text-gray-500 mt-1">{{ activity.time }}</p>
+                  <p class="text-sm text-white mb-1">{{ activity.title || "Loading"}}</p>
+                  <p class="text-xs text-gray-400">{{ activity.description || "Loading"}}</p>
+                  <p class="text-xs text-gray-500 mt-1">{{ activity.time  || "Loading"}}</p>
                 </div>
               </div>
             </div>
@@ -75,49 +75,7 @@
     </main>
 </template>
 <style lang="scss">
-.main-informations {
-  cursor: pointer;
-  .informations {
-    position: relative;
-    border-radius: 12px;
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a; 
-    overflow: hidden;
-    transition: all 0.3s ease;
-
-  
-    &::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      padding: 2px; 
-      border-radius: inherit;
-      background: linear-gradient(
-        150deg,
-        rgba(71, 74, 106, 1) 0%,
-        rgba(41, 43, 58, 1) 25%,
-        rgba(17, 17, 18, 0.97) 70%,
-        rgba(120, 86, 44, 1) 100%
-      );
-      mask: 
-        linear-gradient(#fff 0 0) content-box, 
-        linear-gradient(#fff 0 0);
-      mask-composite: exclude;
-      -webkit-mask: 
-        linear-gradient(#fff 0 0) content-box, 
-        linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      opacity: 0; 
-      transition: opacity 0.3s ease, filter 0.3s ease;
-      pointer-events: none;
-    }
-
-    &:hover::before {
-      opacity: 1;
-      filter: brightness(1.2);
-    }
-  }
-}
+ @use "../components/scss/dashboard" as *
 </style>
 <script setup>
 import { ref } from 'vue'
@@ -135,6 +93,7 @@ import {
 
 const stats = [
   {
+    title: "Mensagens recentes",
     label: 'Mensagens',
     value: '24',
     change: '+2',
