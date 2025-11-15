@@ -8,7 +8,8 @@
       <transition name="fade" mode="out-in">
         <div :key="activeView">
           <div v-if="activeView === 'chat'">
-            <Chat></Chat>
+            <!-- ✅ Aqui passamos a prop "room" -->
+            <Chat :room="room" />
           </div>
 
           <div v-else-if="activeView === 'imagens'">
@@ -22,8 +23,7 @@
           </div>
 
           <div v-else-if="activeView === 'trabalhos'">
-            <h3>💼 Trabalhos</h3>
-            <p>Veja os trabalhos da equipe aqui.</p>
+            <Works  :room="room"></Works>
           </div>
 
           <div v-else-if="activeView === 'config'">
@@ -45,9 +45,8 @@ import { ref, computed } from "vue";
 import Menubar from "primevue/menubar";
 import { getRoomById } from "../../../Types/ActivateRooms";
 import { header } from "../../../Types/Header-class";
-import Chat from "./Chat.vue"
-
-
+import Chat from "./Chat.vue";
+import Works from "./Works.vue";
 const props = defineProps({
   roomId: {
     type: Number,
@@ -59,7 +58,6 @@ const room = computed(() => getRoomById(props.roomId));
 const activeView = ref("");
 const messages = ref(["Olá 👋", "Bem-vindo à sala!"]);
 
-// cria uma cópia do header e adiciona comandos de clique
 const menuItems = header.map((item) => {
   const newItem = { ...item };
 

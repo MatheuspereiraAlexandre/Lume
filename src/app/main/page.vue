@@ -4,13 +4,18 @@
     <MainHeader />
 
     <main class="ml-16 pt-16 min-h-screen  transition-all">
-      <component :is="currentComponent" />
+      <!-- Passe a prop autoOpenId para Teams -->
+      <component 
+        :is="currentComponent" 
+        :auto-open-room-id="activeView === 'teams' ? autoOpenId : null"
+      />
     </main>
   </div>
 </template>
 
 <script lang="ts" setup> 
-import { ref, computed }  from 'vue'
+import { ref, computed, onMounted, nextTick, watch }  from 'vue'
+import { useRoute } from "vue-router";
 import type { Component } from 'vue'
 
 import Teams             from '/src/app/components/Teams.vue'
@@ -27,6 +32,8 @@ type ViewName = 'dashboard' | 'activity' | 'teams' | 'chats' | 'calendar'
 
 // Estado reativo com tipo explícito
 const activeView = ref<ViewName>('dashboard')
+const route = useRoute();
+const autoOpenId = ref<number | null>(null);
 
 // Mapeamento com tipagem explícita
 const componentsMap: Record<ViewName, Component> = {
@@ -46,4 +53,20 @@ const currentComponent = computed<Component>(() => {
 function setActive(view: ViewName) {
   activeView.value = view
 }
+
+onMounted(() => {
+  console.log("🟦 Main.vue mounted");
+  console.log("🟦 Route query:", route.query);
+
+  nextTick(() => {
+    console.log("🟩 Main onMounted - route.query:", route.query);
+    if (route.query.openRoomId) {
+      autoOpenId.value = Number(route.query.openRoomId);
+      console.log("🟨 autoOpenId setado para:", autoOpenId.value);
+      // força a view para 'teams' quando tiver openRoomId
+      activeView.value = 'teams';
+      console.log("🟧 activeView mudado para: teams");
+    }
+  });
+});
 </script>

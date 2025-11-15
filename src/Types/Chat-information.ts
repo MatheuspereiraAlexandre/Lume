@@ -1,4 +1,3 @@
-// src/Types/Chat-information.ts
 export const ChatOptions = [
   {
     label: "Chats",
@@ -10,18 +9,42 @@ export const ChatOptions = [
     ],
   },
   {
-    label: "Configuraçãoes",
-    items: [
-        {label: "Adcionar sala", icon: "fa-solid fa-plus"}
-        
-    ]
-
-  }
+    label: "Configurações",
+    items: [{ label: "Adicionar sala", icon: "fa-solid fa-plus" }],
+  },
 ];
 
 export const chat = [
-  { id: "1", messages: [{ id: "1", user: "Matheus", message: "Olá!" }] },
-  { id: "2", messages: [{ id: "2", user:"arthur santos", message: "Vai se fuder nigger" }] },
-  { id: "3", messages: [{ id: "3", message: "Mensagem do chat 3" }] },
-  { id: "4", messages: [{ id: "4", message: "Mensagem do chat 4" }] },
+  {
+    roomId: 1,
+    label: "Chat Geral",
+    messages: [
+      { user: "Matheus", text: "Olá pessoal!" },
+      { user: "Ana", text: "Oi Matheus! Tudo bem?" },
+    ],
+  },
+  {
+    roomId: 1,
+    label: "Chat Técnico",
+    messages: [
+      { user: "Carlos", text: "Servidor atualizado." },
+      { user: "Matheus", text: "Valeu pelo aviso!" },
+    ],
+  },
+  {
+    roomId: 2,
+    label: "Chat Design",
+    messages: [
+      { user: "Beatriz", text: "Nova logo pronta!" },
+      { user: "Matheus", text: "Ficou incrível 🔥" },
+    ],
+  },
+  {
+    roomId: 2,
+    label: "Chat UI/UX",
+    messages: [
+      { user: "Lucas", text: "Revisem o protótipo." },
+      { user: "Matheus", text: "Já estou olhando 👀" },
+    ],
+  },
 ];
